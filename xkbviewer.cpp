@@ -94,7 +94,8 @@ void XkbViewer::fill() {
 				leftFromRow += shape.boundingRect().width() + key->gap;
 
 				QGraphicsSimpleTextItem *labelItem = new QGraphicsSimpleTextItem(label, keyItem);// scene()->addSimpleText(label);
-				labelItem->scale(2, 2);
+				labelItem->setTransformOriginPoint(labelItem->boundingRect().center());
+				labelItem->setScale(3);
 				//labelItem->setParentItem(keyItem);
 				QRectF labelRect = labelItem->boundingRect();
 				labelRect.moveCenter(keyItem->boundingRect().center());
