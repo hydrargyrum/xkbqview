@@ -85,14 +85,20 @@ void XkbViewer::fill() {
 				//shape.translate(section->left + row->left + leftFromRow, section->top + row->top);
 
 				QGraphicsPolygonItem *keyItem = scene()->addPolygon(shape);
+				// position
+				leftFromRow += key->gap;
 				keyItem->translate(section->left + row->left + leftFromRow, section->top + row->top);
+				leftFromRow += shape.boundingRect().width();
 
+				// flags
+				keyItem->setFlag(QGraphicsItem::ItemIsSelectable);
+
+				// appearance
 				QColor color = colors[qrand() % colors.size()];
 				color.setAlpha(50);
 				keyItem->setBrush(color);
 
-				leftFromRow += shape.boundingRect().width() + key->gap;
-
+				// label
 				QGraphicsSimpleTextItem *labelItem = new QGraphicsSimpleTextItem(label, keyItem);// scene()->addSimpleText(label);
 				labelItem->setTransformOriginPoint(labelItem->boundingRect().center());
 				labelItem->setScale(3);
@@ -100,8 +106,6 @@ void XkbViewer::fill() {
 				QRectF labelRect = labelItem->boundingRect();
 				labelRect.moveCenter(keyItem->boundingRect().center());
 				labelItem->setPos(labelRect.topLeft());
-
-				//keyItem->set
 			}
 		}
 	}
