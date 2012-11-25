@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QX11Info>
 #include <X11/X.h>
+#include "xkbgeom.h"
 
 
 class _XkbDesc;
@@ -21,14 +22,15 @@ public:
 
 	const _XkbDesc *xkb() const;
 
-	void get();
+	XkbGeom geom() const;
 	QMap<QString, KeyCode> keycodesByName() const;
 	QMap<KeyCode, QList<KeySym> > keycodeSyms(int group) const;
 
-	QString getAtom(Atom atom) const;
 
+	QString getAtom(Atom atom) const;
+	static QString getAtom(Display *dpy, Atom atom);
 	static QString getName4(const _XkbKeyNameRec &xname);
-	
+
 private:
 	_XDisplay *m_dpy;
 	_XkbDesc *m_xkb;

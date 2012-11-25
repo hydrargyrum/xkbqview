@@ -20,8 +20,6 @@ private slots:
 	void sceneSelectionChanged();
 
 private:
-	QList<QPolygon> getShapes();
-
 	XkbInfo *m_info;
 };
 

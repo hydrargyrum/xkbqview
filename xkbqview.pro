@@ -16,10 +16,12 @@ LIBS += -lX11 -lxkbfile
 SOURCES += main.cpp\
         mainwindow.cpp \
     xkbviewer.cpp \
-    xkbinfo.cpp
+    xkbinfo.cpp \
+    xkbgeom.cpp
 
 HEADERS  += mainwindow.h \
     xkbviewer.h \
-    xkbinfo.h
+    xkbinfo.h \
+    xkbgeom.h
 
 FORMS    += mainwindow.ui

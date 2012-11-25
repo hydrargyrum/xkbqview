@@ -26,6 +26,10 @@ const _XkbDesc *XkbInfo::xkb() const {
 	return m_xkb;
 }
 
+XkbGeom XkbInfo::geom() const {
+	return XkbGeom(const_cast<Display*>(m_dpy), const_cast<XkbDescPtr>(m_xkb));
+}
+
 QMap<KeyCode, QList<KeySym> > XkbInfo::keycodeSyms(int group) const {
 	QMap<KeyCode, QList<KeySym> > keycodeSyms;
 	for (int kc = m_xkb->min_key_code; kc < m_xkb->max_key_code; kc++) {
@@ -47,11 +51,15 @@ QMap<QString, KeyCode> XkbInfo::keycodesByName() const {
 	return ret;
 }
 
-QString XkbInfo::getAtom(Atom atom) const {
-	char *cname = XGetAtomName(m_dpy, atom);
+QString XkbInfo::getAtom(Display *dpy, Atom atom) {
+	char *cname = XGetAtomName(dpy, atom);
 	QString qname = QString::fromUtf8(cname);
 	XFree(cname);
 	return qname;
+}
+
+QString XkbInfo::getAtom(Atom atom) const {
+	return getAtom(m_dpy, atom);
 }
 
 QString XkbInfo::getName4(const XkbKeyNameRec &xname) {
