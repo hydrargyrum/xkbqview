@@ -5,29 +5,46 @@
 #include <X11/extensions/XKBgeom.h>
 
 
-XkbInfo::XkbInfo(Display *dpy, QObject *parent) :
-	QObject(parent), m_dpy(dpy), m_xkb(0)
+XkbInfo::XkbInfo(Display *dpy) :
+	m_xkb(0)
 {
-	if (!m_dpy)
-		m_dpy = QX11Info::display();
+	if (!dpy)
+		dpy = QX11Info::display();
 
-	m_xkb = XkbGetMap(m_dpy, XkbAllMapComponentsMask, XkbUseCoreKbd);
-	XkbGetGeometry(m_dpy, m_xkb);
-	XkbGetNames(m_dpy, XkbAllNamesMask, m_xkb);
-	XkbGetCompatMap(m_dpy, XkbAllCompatMask, m_xkb);
+	XkbDescRec *xkb = XkbGetMap(dpy, XkbAllMapComponentsMask, XkbUseCoreKbd);
+	m_xkb = QSharedPointer<XkbDescRec>(xkb, &XkbInfo::freeKeyboard);
+
+	XkbGetGeometry(dpy, m_xkb.data());
+	XkbGetNames(dpy, XkbAllNamesMask, m_xkb.data());
+	XkbGetCompatMap(dpy, XkbAllCompatMask, m_xkb.data());
+}
+
+XkbInfo::XkbInfo(QSharedPointer<_XkbDesc> xkb) :
+	m_xkb(xkb)
+{
 }
 
 XkbInfo::~XkbInfo() {
-	if (m_xkb)
-		XkbFreeKeyboard(m_xkb, 0, True);
 }
 
-const _XkbDesc *XkbInfo::xkb() const {
+void XkbInfo::freeKeyboard(_XkbDesc *xkb) {
+	XkbFreeKeyboard(xkb, 0, true);
+}
+
+_XkbDesc *XkbInfo::xkb() const {
+	return m_xkb.data();
+}
+
+QSharedPointer<_XkbDesc> XkbInfo::sharedXkb() const {
 	return m_xkb;
 }
 
+_XDisplay *XkbInfo::display() const {
+	return m_xkb->dpy;
+}
+
 XkbGeom XkbInfo::geom() const {
-	return XkbGeom(const_cast<Display*>(m_dpy), const_cast<XkbDescPtr>(m_xkb));
+	return XkbGeom(m_xkb);
 }
 
 QMap<KeyCode, QList<KeySym> > XkbInfo::keycodeSyms(int group) const {
@@ -59,7 +76,7 @@ QString XkbInfo::getAtom(Display *dpy, Atom atom) {
 }
 
 QString XkbInfo::getAtom(Atom atom) const {
-	return getAtom(m_dpy, atom);
+	return getAtom(m_xkb->dpy, atom);
 }
 
 QString XkbInfo::getName4(const XkbKeyNameRec &xname) {

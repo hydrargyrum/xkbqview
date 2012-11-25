@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QPolygon>
+#include <QSharedPointer>
 #include <QString>
 
 class _XDisplay;
@@ -29,15 +30,14 @@ public:
 	};
 
 
-	XkbGeom(_XDisplay *dpy, _XkbDesc *xkb);
+	XkbGeom(QSharedPointer<_XkbDesc> xkb);
 
 	QList<Section> getSections() const;
 
 private:
 	QList<Shape> getShapes() const;
 
-	_XDisplay *m_dpy;
-	_XkbDesc *m_xkb;
+	QSharedPointer<_XkbDesc> m_xkb;
 };
 
 #endif // XKBGEOM_H

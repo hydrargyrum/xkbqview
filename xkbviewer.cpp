@@ -18,7 +18,7 @@ XkbViewer::XkbViewer(QWidget *parent) :
 
 	connect(scene(), SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
 
-	m_info = new XkbInfo(0, this);
+	m_info.reset(new XkbInfo());
 
 #if 0
 	int keycodesNumber = m_xkb->max_key_code - m_xkb->min_key_code + 1;
@@ -33,6 +33,9 @@ XkbViewer::XkbViewer(QWidget *parent) :
 		i++; i--;
 	}
 #endif
+}
+
+XkbViewer::~XkbViewer() {
 }
 
 void XkbViewer::fill() {

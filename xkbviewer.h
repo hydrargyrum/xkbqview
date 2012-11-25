@@ -10,6 +10,7 @@ class XkbViewer : public QGraphicsView {
 
 public:
 	explicit XkbViewer(QWidget *parent = 0);
+	~XkbViewer();
 
 	void fill();
 
@@ -20,7 +21,7 @@ private slots:
 	void sceneSelectionChanged();
 
 private:
-	XkbInfo *m_info;
+	QScopedPointer<XkbInfo> m_info;
 };
 
 #endif // XKBVIEWER_H

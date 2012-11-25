@@ -4,8 +4,8 @@
 #include <X11/extensions/XKBgeom.h>
 #include "xkbinfo.h"
 
-XkbGeom::XkbGeom(_XDisplay *dpy, _XkbDesc *xkb)
-	: m_dpy(dpy), m_xkb(xkb)
+XkbGeom::XkbGeom(QSharedPointer<_XkbDesc> xkb) :
+	m_xkb(xkb)
 {
 }
 

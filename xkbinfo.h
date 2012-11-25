@@ -4,6 +4,7 @@
 #include <QList>
 #include <QMap>
 #include <QObject>
+#include <QSharedPointer>
 #include <QX11Info>
 #include <X11/X.h>
 #include "xkbgeom.h"
@@ -13,14 +14,15 @@ class _XkbDesc;
 class _XDisplay;
 class _XkbKeyNameRec;
 
-class XkbInfo : public QObject {
-	Q_OBJECT
-
+class XkbInfo {
 public:
-	explicit XkbInfo(_XDisplay *dpy = 0, QObject *parent = 0);
+	explicit XkbInfo(_XDisplay *dpy = 0);
+	explicit XkbInfo(QSharedPointer<_XkbDesc> xkb);
 	~XkbInfo();
 
-	const _XkbDesc *xkb() const;
+	_XDisplay *display() const;
+	_XkbDesc *xkb() const;
+	QSharedPointer<_XkbDesc> sharedXkb() const;
 
 	XkbGeom geom() const;
 	QMap<QString, KeyCode> keycodesByName() const;
@@ -32,8 +34,9 @@ public:
 	static QString getName4(const _XkbKeyNameRec &xname);
 
 private:
-	_XDisplay *m_dpy;
-	_XkbDesc *m_xkb;
+	static void freeKeyboard(_XkbDesc *xkb);
+
+	QSharedPointer<_XkbDesc> m_xkb;
 };
 
 #endif // XKBINFO_H
