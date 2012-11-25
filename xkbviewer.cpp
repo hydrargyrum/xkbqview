@@ -10,7 +10,6 @@
 #include "xkbinfo.h"
 #include "xkbgeom.h"
 
-
 XkbViewer::XkbViewer(QWidget *parent) :
 	QGraphicsView(parent)
 {
@@ -52,7 +51,8 @@ void XkbViewer::fill() {
 				QGraphicsPolygonItem *keyItem = scene()->addPolygon(key.shape);
 				keyItem->translate(key.x + row.x + section.x, row.y + section.y);
 				keyItem->setFlag(QGraphicsItem::ItemIsSelectable);
-				keyItem->setData(Qt::UserRole, key.name);
+				keyItem->setData(KeyCodeNameRole, key.name);
+				keyItem->setData(KeyCodeRole, key.keycode);
 
 				QColor color = colors[qrand() % colors.size()];
 				color.setAlpha(50);
@@ -80,6 +80,10 @@ void XkbViewer::sceneSelectionChanged() {
 		return;
 
 	QGraphicsItem *item = items.at(0);
-	//if (item->data(Qt::UserRole))
-	qDebug() << item->data(Qt::UserRole).toString();
+	int kc = item->data(KeyCodeRole).toInt();
+	emit selected(kc);
+
+
+	QMap<KeyCode, QList<KeySym> > allsyms = m_info->keycodeSyms(0);
+	qDebug() << m_info->symName(allsyms.value(kc).value(0));
 }

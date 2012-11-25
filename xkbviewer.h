@@ -14,6 +14,12 @@ public:
 
 	void fill();
 
+	static const Qt::ItemDataRole KeyCodeNameRole = Qt::ItemDataRole(Qt::UserRole);
+	static const Qt::ItemDataRole KeyCodeRole = Qt::ItemDataRole(Qt::UserRole + 1);
+
+signals:
+	void selected(int keycode);
+
 public slots:
 	void setScalePercent(int percent);
 

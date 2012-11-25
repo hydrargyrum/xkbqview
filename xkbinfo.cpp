@@ -49,21 +49,22 @@ XkbGeom XkbInfo::geom() const {
 
 QMap<KeyCode, QList<KeySym> > XkbInfo::keycodeSyms(int group) const {
 	QMap<KeyCode, QList<KeySym> > keycodeSyms;
+
 	for (int kc = m_xkb->min_key_code; kc < m_xkb->max_key_code; kc++) {
-		XkbSymMapRec *symmap = m_xkb->map->key_sym_map + kc;
 		if (XkbKeyNumGroups(m_xkb, kc) > 0) {
 			for (int shiftLevel = 0; shiftLevel < XkbKeyGroupWidth(m_xkb, kc, 0); shiftLevel++) {
 				keycodeSyms[kc].append(XkbKeySymEntry(m_xkb, kc, shiftLevel, 0));
 			}
 		}
 	}
+
 	return keycodeSyms;
 }
 
 QMap<QString, KeyCode> XkbInfo::keycodesByName() const {
 	QMap<QString, KeyCode> ret;
-	for (int i = m_xkb->min_key_code; i <= m_xkb->max_key_code; i++) {
-		ret[getName4(m_xkb->names->keys[i])] = KeyCode(i);
+	for (int kc = m_xkb->min_key_code; kc <= m_xkb->max_key_code; kc++) {
+		ret[getName4(m_xkb->names->keys[kc])] = KeyCode(kc);
 	}
 	return ret;
 }
@@ -81,4 +82,8 @@ QString XkbInfo::getAtom(Atom atom) const {
 
 QString XkbInfo::getName4(const XkbKeyNameRec &xname) {
 	return QString::fromAscii(xname.name, qstrnlen(xname.name, XkbKeyNameLength));
+}
+
+QString XkbInfo::symName(KeySym symbol) {
+	return XKeysymToString(symbol);
 }

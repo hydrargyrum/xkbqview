@@ -32,6 +32,7 @@ public:
 	QString getAtom(Atom atom) const;
 	static QString getAtom(Display *dpy, Atom atom);
 	static QString getName4(const _XkbKeyNameRec &xname);
+	static QString symName(KeySym symbol);
 
 private:
 	static void freeKeyboard(_XkbDesc *xkb);
