@@ -7,6 +7,7 @@
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKBfile.h>
 #include <X11/extensions/XKBgeom.h>
+#include "xkbinfo.h"
 
 
 XkbViewer::XkbViewer(QWidget *parent) :
@@ -14,22 +15,29 @@ XkbViewer::XkbViewer(QWidget *parent) :
 {
 	setScene(new QGraphicsScene(this));
 
-	Display *xdisplay = QX11Info::display();
+	connect(scene(), SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
 
-	/*
-	XkbFileInfo info;
-	memset(&info, 0, sizeof(info));
-	XkbReadFromServer(xdisplay, 1, 1, &info);
-	*/
+	m_info = new XkbInfo(0, this);
 
-	m_xkb = XkbGetMap(xdisplay, XkbAllMapComponentsMask, XkbUseCoreKbd);
-	XkbGetGeometry(xdisplay, m_xkb);
+#if 0
+	int keycodesNumber = m_xkb->max_key_code - m_xkb->min_key_code + 1;
+
+	for (int i = 0; false && i < m_xkb->map->num_types; i++) {
+		XkbKeyTypeRec *type = m_xkb->map->types + i;
+		i++; i--;
+	}
+
+	for (int i = 0; i < m_xkb->map->num_syms; i++) {
+		KeySym *sym = m_xkb->map->syms + i;
+		i++; i--;
+	}
+#endif
 }
 
 QList<QPolygon> XkbViewer::getShapes() {
 	QList<QPolygon> shapes;
 
-	XkbGeometryRec *geom = m_xkb->geom;
+	XkbGeometryRec *geom = m_info->xkb()->geom;
 
 	for (int i = 0; i < geom->num_shapes; i++) {
 		XkbShapeRec *shape = geom->shapes + i;
@@ -67,7 +75,7 @@ void XkbViewer::fill() {
 
 	QList<QPolygon> shapes = getShapes();
 
-	XkbGeometryRec *geom = m_xkb->geom;
+	XkbGeometryRec *geom = m_info->xkb()->geom;
 
 	for (int i = 0; i < geom->num_sections; i++) {
 		XkbSectionRec *section = geom->sections + i;
@@ -79,7 +87,7 @@ void XkbViewer::fill() {
 			for (int k = 0; k < row->num_keys; k++) {
 				XkbKeyRec *key = row->keys + k;
 
-				QString label = QString::fromAscii(key->name.name, qstrnlen(key->name.name, XkbKeyNameLength));
+				QString label = m_info->getName4(key->name);
 
 				QPolygon shape = shapes[key->shape_ndx];
 				//shape.translate(section->left + row->left + leftFromRow, section->top + row->top);
@@ -92,6 +100,7 @@ void XkbViewer::fill() {
 
 				// flags
 				keyItem->setFlag(QGraphicsItem::ItemIsSelectable);
+				keyItem->setData(Qt::UserRole, label);
 
 				// appearance
 				QColor color = colors[qrand() % colors.size()];
@@ -114,4 +123,14 @@ void XkbViewer::fill() {
 void XkbViewer::setScalePercent(int percent) {
 	resetTransform();
 	scale(percent / 100., percent / 100.);
+}
+
+void XkbViewer::sceneSelectionChanged() {
+	QList<QGraphicsItem*> items = scene()->selectedItems();
+	if (items.size() != 1)
+		return;
+
+	QGraphicsItem *item = items.at(0);
+	//if (item->data(Qt::UserRole))
+	qDebug() << item->data(Qt::UserRole).toString();
 }

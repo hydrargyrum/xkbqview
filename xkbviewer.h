@@ -3,7 +3,7 @@
 
 #include <QGraphicsView>
 
-class _XkbDesc;
+class XkbInfo;
 
 class XkbViewer : public QGraphicsView {
 	Q_OBJECT
@@ -16,10 +16,13 @@ public:
 public slots:
 	void setScalePercent(int percent);
 
+private slots:
+	void sceneSelectionChanged();
+
 private:
 	QList<QPolygon> getShapes();
 
-	_XkbDesc *m_xkb;
+	XkbInfo *m_info;
 };
 
 #endif // XKBVIEWER_H
