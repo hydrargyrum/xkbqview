@@ -15,6 +15,8 @@ QList<XkbGeom::Section> XkbGeom::getSections() const {
 	XkbGeometryRec *xGeom = m_xkb->geom;
 	QList<Section> sections;
 
+	QMap<QString, KeyCode> keycodes = XkbInfo(m_xkb).keycodesByName();
+
 	for (int i = 0; i < xGeom->num_sections; i++) {
 		XkbSectionRec *xSection = xGeom->sections + i;
 		Section section;
@@ -36,6 +38,7 @@ QList<XkbGeom::Section> XkbGeom::getSections() const {
 
 				key.name = XkbInfo::getName4(xKey->name);
 				key.shape = shapes[xKey->shape_ndx];
+				key.keycode = keycodes.value(key.name);
 
 				leftFromRow += xKey->gap;
 				key.x = leftFromRow;

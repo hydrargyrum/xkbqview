@@ -15,6 +15,7 @@ public:
 
 	struct Key {
 		QString name;
+		int keycode;
 		Shape shape;
 		int x;
 	};
