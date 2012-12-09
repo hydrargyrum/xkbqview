@@ -52,8 +52,8 @@ QMap<KeyCode, QList<KeySym> > XkbInfo::keycodeSyms(int group) const {
 
 	for (int kc = m_xkb->min_key_code; kc < m_xkb->max_key_code; kc++) {
 		if (XkbKeyNumGroups(m_xkb, kc) > 0) {
-			for (int shiftLevel = 0; shiftLevel < XkbKeyGroupWidth(m_xkb, kc, 0); shiftLevel++) {
-				keycodeSyms[kc].append(XkbKeySymEntry(m_xkb, kc, shiftLevel, 0));
+			for (int shiftLevel = 0; shiftLevel < XkbKeyGroupWidth(m_xkb, kc, group); shiftLevel++) {
+				keycodeSyms[kc].append(XkbKeySymEntry(m_xkb, kc, shiftLevel, group));
 			}
 		}
 	}
