@@ -1,0 +1,57 @@
+xkb {
+	keycodes
+	types
+	compatibility
+	symbols
+	geometry
+}
+
+
+
+typedef struct {                     /* Client Map */
+    unsigned char   size_types;      /* # occupied entries in types */
+    unsigned char   num_types;       /* # entries in types */
+    XkbKeyTypePtr   types;           /* vector of key types used by this keymap */
+                                     /* length of the syms array */
+    unsigned short  size_syms;
+    unsigned short  num_syms;        /* # entries in syms */
+    KeySym *        syms;            /* linear 2d tables of keysyms, 1 per key */
+    XkbSymMapPtr    key_sym_map;     /* 1 per keycode, maps keycode to syms */
+    unsigned char * modmap;          /* 1 per keycode, real mods bound to key */
+} XkbClientMapRec, *XkbClientMapPtr;
+
+
+
+// KeySym *        syms:
+// {key1sym1, key1sym2, key2sym1, key3sym1, key4sym1, key4sym, key4sym3, ...}
+
+
+
+struct XkbSymMapPtr {
+	unsigned char	 kt_index[XkbNumKbdGroups];
+	unsigned char	 group_info;
+	unsigned char	 width;
+	unsigned short	 offset;
+}
+
+
+// groups: languages (4 max)
+// 
+
+
+
+/// biblio
+/// The X Keyboard Extension: Library Specification
+/// xkbprint source
+/// xkbcomp source
+
+
+
+# list keyboards
+xinput -list
+# capture one keyboard
+xinput test 8
+
+
+
+

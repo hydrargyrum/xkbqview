@@ -81,7 +81,7 @@ void XkbViewer::sceneSelectionChanged() {
 
 	QGraphicsItem *item = items.at(0);
 	int kc = item->data(KeyCodeRole).toInt();
-	emit selected(kc);
+	emit selectedKeycode(kc);
 
 
 	QMap<KeyCode, QList<KeySym> > allsyms = m_info->keycodeSyms(0);

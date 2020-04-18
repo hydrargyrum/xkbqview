@@ -1,0 +1,10 @@
+- set keysyms for a keycode
+
+- export .xkb
+
+- choose keyboard, choose group
+- beautiful ui
+
+- make xserver load our .xkb directly
+- be notified of xserver changes (groups, mapping, etc.)
+

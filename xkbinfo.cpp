@@ -47,6 +47,16 @@ XkbGeom XkbInfo::geom() const {
 	return XkbGeom(m_xkb);
 }
 
+#include <QFile>
+
+enum QXkbFileDataType {
+	kXkbFileTypes = 0,
+	kXkbFileCompats = 1,
+	kXkbFileSymbols = 2,
+	kXkbFileKeycodes = 4,
+	kXkbFileGeometry = 5
+};
+
 QMap<KeyCode, QList<KeySym> > XkbInfo::keycodeSyms(int group) const {
 	QMap<KeyCode, QList<KeySym> > keycodeSyms;
 
@@ -54,9 +64,19 @@ QMap<KeyCode, QList<KeySym> > XkbInfo::keycodeSyms(int group) const {
 		if (XkbKeyNumGroups(m_xkb, kc) > 0) {
 			for (int shiftLevel = 0; shiftLevel < XkbKeyGroupWidth(m_xkb, kc, group); shiftLevel++) {
 				keycodeSyms[kc].append(XkbKeySymEntry(m_xkb, kc, shiftLevel, group));
+				XkbKeyTypeRec *type = XkbCMKeyType(m_xkb->map, kc, group);
+				int i = 0;
 			}
 		}
 	}
+
+	FILE *f = fopen("/tmp/1.xkb", "w");
+	XkbFileInfo finfo;
+	finfo.xkb = m_xkb.data();
+	finfo.defined = 0;
+	finfo.type = 3;
+	XkbWriteXKBFile(f, &finfo, False, 0, 0);
+	fclose(f);
 
 	return keycodeSyms;
 }
